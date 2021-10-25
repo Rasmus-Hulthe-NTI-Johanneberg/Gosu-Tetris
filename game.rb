@@ -14,13 +14,19 @@ class Intro < Gosu::Window
         @green = Gosu::Color.argb(0xff_00ff00)
         @fushia = Gosu::Color.argb(0xff_ff00ff)
         @yellow_block = Gosu::Color.argb(0xff_ffff00)
+        @blocks = []
+        @current_moving = []
         for i in 0..10 do
             @grid.append([@mid+@grid_dist_x*(i-5), @y_offset + @grid_dist_y*20, @mid+@grid_dist_x*(i-5), @y_offset])
+            @blocks
         end
         for i in 0..20 do
+            @blocks.append([nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
             @grid.append([@mid-@grid_dist_x*5, @y_offset + i*@grid_dist_y, @mid+@grid_dist_x*5, @y_offset + i*@grid_dist_y])
         end
         #p @grid
+
+        
     end
 
     def update
@@ -32,6 +38,10 @@ class Intro < Gosu::Window
             self.draw_line(line[0], line[1],@fushia, line[2], line[3], @green)    
         }
         
+    end
+
+    def spawn_piece()
+
     end
 
     def draw
