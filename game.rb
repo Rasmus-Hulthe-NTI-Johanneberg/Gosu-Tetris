@@ -15,8 +15,15 @@ class Intro < Gosu::Window
         @green = Gosu::Color.argb(0xff_00ff00)
         @fushia = Gosu::Color.argb(0xff_ff00ff)
         @random_color = Gosu::Color.argb(0xff_ffccff)
-        @block_color_cube = Gosu::Color.argb(0xff_ffff00)
-        @block_color_long = Gosu::Color.argb(0xff_0096c8)
+        @red = Gosu::Color.argb(0xff_ff0000)
+        @cube_color = Gosu::Color.argb(0xff_f7e444) # yellow
+        @long_color = Gosu::Color.argb(0xff_32b4e1) # light blue
+        @hook_1_color = Gosu::Color.argb(0xff_245594) # Blue
+        @hook_2_color = Gosu::Color.argb(0xff_ea731d) # Yellow
+        @squiggle_1_color = Gosu::Color.argb(0xff_73bc18) # Green
+        @squiggle_2_color = Gosu::Color.argb(0xff_f72034) # Red
+
+
         
         @block_cube = [[0, 0], [1, 0], [0, 1], [1, 1]]
         @block_cube_2 = [[0, 0], [1, 0], [0, 1], [1, 1]]
@@ -46,16 +53,16 @@ class Intro < Gosu::Window
         @block_hook_2_yellow_2 = [[0, 0], [0, 1], [0, 2], [1, 2]]
         @block_hook_2_yellow_3 = [[0, 0], [0, 1], [1, 0], [2, 0]]
         @block_hook_2_yellow_4 = [[0, 0], [1, 0], [1, 1], [1, 2]]
-        @hook_2_rotates = [@block_hook_2, @block_hook_2_2, @block_hook_2_3, @block_hook_2_4]
+        @hook_2_rotates = [@block_hook_2_yellow, @block_hook_2_yellow_2, @block_hook_2_yellow_3, @block_hook_2_yellow_4]
 
-        @block_hook_1_blue = [[0, 0], [0, 1], [1, 1], [2, 1]]
-        @block_hook_1_blue_2 = [[0, 0], [1, 0], [2, 0], [2, 1]]
-        @block_hook_1_blue_3 = [[0, 1], [1, 1], [1, 2], [0, 2]]
-        @block_hook_1_blue_4 = [[0, 0], [1, 0], [1, 1], [2, 1]]
-        @hook_1_rotates = [@block_hook_1, @block_hook_1_2, @block_hook_1_3, @block_hook_1_4]
+        @block_hook_1_blue = [[0, 0], [1, 0], [0, 1], [0, 2]]
+        @block_hook_1_blue_2 = [[0, 1], [1, 1], [2, 1], [2, 2]]
+        @block_hook_1_blue_3 = [[1, 0], [1, 1], [1, 2], [0, 2]]
+        @block_hook_1_blue_4 = [[0, 0], [0, 1], [1, 1], [2, 1]]
+        @hook_1_rotates = [@block_hook_1_blue, @block_hook_1_blue_2, @block_hook_1_blue_3, @block_hook_1_blue_4]
 
         @types_of_blocks = [    @cube_rotates,      @long_rotates,  @squiggle_1_rotates,    @squiggle_2_rotates,    @hook_1_rotates,    @hook_2_rotates]
-        @block_colors = [       @block_color_cube,  @aqua,          @green, @fushia,        @random_color,          @block_color_long,  @green]
+        @block_colors = [       @cube_color,        @long_color,    @squiggle_1_color,      @squiggle_2_color,      @hook_1_color,      @hook_2_color]
         @current_peice = -1
         @current_peice_rotation = 0
         @current_peice_color = nil
@@ -98,9 +105,12 @@ class Intro < Gosu::Window
     end
 
     def spawn_piece()
-        @current_peice = rand(@types_of_blocks.count)
+        
+        @current_peice = rand(0...6)
+        p @current_peice
         @current_peice_rotation = 0
         @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
+        p @current_moving
         @current_peice_color = @block_colors[@current_peice]
         @current_pos = [4, 0]
     end
@@ -188,7 +198,7 @@ class Intro < Gosu::Window
         end
         @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
         @current_moving.each { |part|
-            @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @fushia
+            @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
         }
     end
 
@@ -273,6 +283,7 @@ class Intro < Gosu::Window
         blocky_copy = []
         @blocks.each{|row| blocky_copy.append(row.clone)}
         #print blocky_copy
+        #p @current_moving
         @current_moving.each { |part|
             @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = nil
         }
