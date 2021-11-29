@@ -10,24 +10,71 @@ class Intro < Gosu::Window
         @grid_dist_x = 40
         @grid_dist_y = 40
         @y_offset = 100
+        @rotation_map = {0=>1, 1=>2, 2=>3, 3=>0}
         @aqua = Gosu::Color.argb(0xff_00ffff)
         @green = Gosu::Color.argb(0xff_00ff00)
         @fushia = Gosu::Color.argb(0xff_ff00ff)
-        @yellow_block = Gosu::Color.argb(0xff_ffff00)
+        @random_color = Gosu::Color.argb(0xff_ffccff)
+        @block_color_cube = Gosu::Color.argb(0xff_ffff00)
+        @block_color_long = Gosu::Color.argb(0xff_0096c8)
+        
         @block_cube = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        @block_cube_2 = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        @block_cube_3 = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        @block_cube_4 = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        @cube_rotates = [@block_cube, @block_cube_2, @block_cube_3, @block_cube_4]
+
+        @block_long = [[0, 0], [1, 0], [2, 0], [3, 0]]
+        @block_long_2 = [[0, 0], [0, 1], [0, 2], [0, 3]]
+        @block_long_3 = [[0, 0], [-1, 0], [-2, 0], [-3, 0]]
+        @block_long_4 = [[0, 0], [0, -1], [0, -2], [0, -3]]
+        @long_rotates = [@block_long, @block_long_2, @block_long_3, @block_long_4]
+
+        @block_squiggle_1 = [[1, 0], [2, 0], [0, 1], [1, 1]]
+        @block_squiggle_1_2 = [[0, 0], [0, 1], [1, 1], [1, 2]]
+        @block_squiggle_1_3 = [[1, 0], [2, 0], [0, 1], [1, 1]]
+        @block_squiggle_1_4 = [[0, 0], [0, 1], [1, 1], [1, 2]]
+        @squiggle_1_rotates = [@block_squiggle_1, @block_squiggle_1_2, @block_squiggle_1_3, @block_squiggle_1_4]
+
+        @block_squiggle_2 = [[0, 0], [1, 0], [1, 1], [2, 1]]
+        @block_squiggle_2_2 = [[1, 0], [1, 1], [0, 1], [0, 2]]
+        @block_squiggle_2_3 = [[0, 0], [1, 0], [1, 1], [2, 1]]
+        @block_squiggle_2_4 = [[1, 0], [1, 1], [0, 1], [0, 2]]
+        @squiggle_2_rotates = [@block_squiggle_2, @block_squiggle_2_2, @block_squiggle_2_3, @block_squiggle_2_4]
+
+        @block_hook_2_yellow = [[0, 1], [1, 1], [2, 1], [2, 0]]
+        @block_hook_2_yellow_2 = [[0, 0], [0, 1], [0, 2], [1, 2]]
+        @block_hook_2_yellow_3 = [[0, 0], [0, 1], [1, 0], [2, 0]]
+        @block_hook_2_yellow_4 = [[0, 0], [1, 0], [1, 1], [1, 2]]
+        @hook_2_rotates = [@block_hook_2, @block_hook_2_2, @block_hook_2_3, @block_hook_2_4]
+
+        @block_hook_1_blue = [[0, 0], [0, 1], [1, 1], [2, 1]]
+        @block_hook_1_blue_2 = [[0, 0], [1, 0], [2, 0], [2, 1]]
+        @block_hook_1_blue_3 = [[0, 1], [1, 1], [1, 2], [0, 2]]
+        @block_hook_1_blue_4 = [[0, 0], [1, 0], [1, 1], [2, 1]]
+        @hook_1_rotates = [@block_hook_1, @block_hook_1_2, @block_hook_1_3, @block_hook_1_4]
+
+        @types_of_blocks = [    @cube_rotates,      @long_rotates,  @squiggle_1_rotates,    @squiggle_2_rotates,    @hook_1_rotates,    @hook_2_rotates]
+        @block_colors = [       @block_color_cube,  @aqua,          @green, @fushia,        @random_color,          @block_color_long,  @green]
+        @current_peice = -1
+        @current_peice_rotation = 0
+        @current_peice_color = nil
         @blocks = []
         @current_moving = []
         @current_pos
         @block_x_offset = 300
         @block_y_offset = 100
+        @counter = 0
         for i in 0..10 do
             @grid.append([@mid+@grid_dist_x*(i-5), @y_offset + @grid_dist_y*20, @mid+@grid_dist_x*(i-5), @y_offset])
         end
         for i in 0..20 do
-            @blocks.append([nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
+            @blocks.append([nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
             @grid.append([@mid-@grid_dist_x*5, @y_offset + i*@grid_dist_y, @mid+@grid_dist_x*5, @y_offset + i*@grid_dist_y])
         end
+        @blocks.pop
         spawn_piece()
+
     end
 
     def update
@@ -51,8 +98,173 @@ class Intro < Gosu::Window
     end
 
     def spawn_piece()
-        @current_moving = @block_cube
+        @current_peice = rand(@types_of_blocks.count)
+        @current_peice_rotation = 0
+        @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
+        @current_peice_color = @block_colors[@current_peice]
         @current_pos = [4, 0]
+    end
+
+    def tETRIS_CLEAR_LINE()
+        @blocks.each_with_index{|line, index|
+            #p line, index
+            if not line.include?(nil)
+                #p @blocks
+                @blocks.delete_at(index)
+                @blocks.insert(0, [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
+            end
+        }
+    end
+
+    def move_left()
+        fall = true
+        blocky_copy = []
+        @blocks.each{|row| blocky_copy.append(row.clone)}
+        @current_moving.each { |part|
+            @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = nil
+        }
+        @current_moving.each { |part|
+            if part[1] + @current_pos[1] <= 19
+                if part[0] + @current_pos[0] - 1 >= 0
+                    if @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]-1] != nil
+                        fall = false
+                    end
+                else
+                    fall = false
+                    break
+
+                end
+            else
+                fall = false
+            end
+        }
+        if fall == true
+            @current_pos[0] -= 1
+            @current_moving.each { |part|
+                @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
+            }
+        else
+            @blocks = blocky_copy
+        end
+    end
+    def move_right()
+        fall = true
+        blocky_copy = []
+        @blocks.each{|row| blocky_copy.append(row.clone)}
+        @current_moving.each { |part|
+            @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = nil
+        }
+        @current_moving.each { |part|
+            if part[1] + @current_pos[1] <= 19
+                if part[0] + @current_pos[0] + 1 <= 9
+                    if @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]+1] != nil
+                        fall = false
+                    end
+                else
+                    fall = false
+                    break
+
+                end
+            else
+                fall = false
+            end
+        }
+        if fall == true
+            @current_pos[0] += 1
+            @current_moving.each { |part|
+                @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
+            }
+        else
+            @blocks = blocky_copy
+        end
+    end
+
+    def rotate()
+                # REMEMBER TO CHANGE TO ALL BLOCKS NOT JUST TESTING BLOCK
+
+        clear_moving_before_moving()
+        if collision(@types_of_blocks[@current_peice][@rotation_map[@current_peice_rotation]]) == true
+            @current_peice_rotation = @rotation_map[@current_peice_rotation]    
+        end
+        @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
+        @current_moving.each { |part|
+            @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @fushia
+        }
+    end
+
+
+    def collision(peice)
+        no_collision = true
+        peice.each{|square|
+            puts square[0] + @current_pos[0]
+            if square[1] + @current_pos[1] + 1 > 19 || square[1] + @current_pos[1] < 0 || square[0] + @current_pos[0] > 9 || square[0] + @current_pos[0] < 0
+                # Outside grid
+                no_collision = false
+                break
+            elsif @blocks[square[1] + @current_pos[1] + 1][square[0] + @current_pos[0]] != nil
+                no_collision = false
+                break
+            end}
+        no_collision
+    end
+
+    def clear_moving_before_moving()
+        @current_moving.each { |part|
+            @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = nil
+        }
+    end
+
+	def button_up(key_id)
+		if key_id == Gosu::KbLeft then
+			move_left()
+        elsif key_id == Gosu::KbRight then
+            move_right()
+        elsif key_id == Gosu::KB_SPACE then
+            #self.close
+            full_gravity()
+        elsif key_id == Gosu::KbDown then
+            gravity()
+        elsif key_id == Gosu::KbUp then
+            rotate()
+            #self.close
+		end
+	end
+
+    def full_gravity()
+        fall = true
+        while fall == true do
+            blocky_copy = []
+            @blocks.each{|row| blocky_copy.append(row.clone)}
+            
+            @current_moving.each { |part|
+                @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = nil
+            }
+            @current_moving.each { |part|
+                if part[1] + @current_pos[1] + 1 <= 19
+                    if part[0] + @current_pos[0] <= 9
+                        if @blocks[part[1] + @current_pos[1] + 1][part[0] + @current_pos[0]] != nil
+                            fall = false
+                        end
+                    else
+                        fall = false
+
+                    end
+                else
+                    fall = false
+                end
+            }
+            if fall == true
+                @current_pos[1] += 1
+                @current_moving.each { |part|
+                    @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
+                }
+            else
+                @blocks = blocky_copy
+                #print blocky_copy
+                spawn_piece()
+                tETRIS_CLEAR_LINE()
+            end
+        end
     end
 
     def gravity()
@@ -81,20 +293,25 @@ class Intro < Gosu::Window
         if fall == true
             @current_pos[1] += 1
             @current_moving.each { |part|
-                @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @yellow_block
+                @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
             }
         else
             @blocks = blocky_copy
-            print blocky_copy
+            #print blocky_copy
             spawn_piece()
+            tETRIS_CLEAR_LINE()
         end
     end
     def draw
         draw_grid()
-        gravity()
-        #self.draw_line(100,0,@fushia, 500, 1000, @green)
-        #p @frame
-        #@image.draw(@krister_coords[0], @krister_coords[1], 0, @krister_size_percent[0], @krister_size_percent[1])
+        @counter += 1
+        if @counter > 15
+            #p @current_pos
+            #puts
+            #puts
+            gravity()
+            @counter = 0
+        end
     end
 end
 
