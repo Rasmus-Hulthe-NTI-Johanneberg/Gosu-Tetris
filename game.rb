@@ -22,47 +22,55 @@ class Intro < Gosu::Window
         @hook_2_color = Gosu::Color.argb(0xff_ea731d) # Yellow
         @squiggle_1_color = Gosu::Color.argb(0xff_73bc18) # Green
         @squiggle_2_color = Gosu::Color.argb(0xff_f72034) # Red
-
-
+        @t_color = Gosu::Color.argb(0xff_92298c)
+        @font = Gosu::Font.new(32, name: "Nimbus Doggo L")
         
-        @block_cube = [[0, 0], [1, 0], [0, 1], [1, 1]]
-        @block_cube_2 = [[0, 0], [1, 0], [0, 1], [1, 1]]
-        @block_cube_3 = [[0, 0], [1, 0], [0, 1], [1, 1]]
-        @block_cube_4 = [[0, 0], [1, 0], [0, 1], [1, 1]]
-        @cube_rotates = [@block_cube, @block_cube_2, @block_cube_3, @block_cube_4]
+        @score = 0
 
-        @block_long = [[0, 0], [1, 0], [2, 0], [3, 0]]
-        @block_long_2 = [[0, 0], [0, 1], [0, 2], [0, 3]]
-        @block_long_3 = [[0, 0], [-1, 0], [-2, 0], [-3, 0]]
-        @block_long_4 = [[0, 0], [0, -1], [0, -2], [0, -3]]
-        @long_rotates = [@block_long, @block_long_2, @block_long_3, @block_long_4]
+        block_cube = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        block_cube_2 = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        block_cube_3 = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        block_cube_4 = [[0, 0], [1, 0], [0, 1], [1, 1]]
+        cube_rotates = [block_cube, block_cube_2, block_cube_3, block_cube_4]
 
-        @block_squiggle_1 = [[1, 0], [2, 0], [0, 1], [1, 1]]
-        @block_squiggle_1_2 = [[0, 0], [0, 1], [1, 1], [1, 2]]
-        @block_squiggle_1_3 = [[1, 0], [2, 0], [0, 1], [1, 1]]
-        @block_squiggle_1_4 = [[0, 0], [0, 1], [1, 1], [1, 2]]
-        @squiggle_1_rotates = [@block_squiggle_1, @block_squiggle_1_2, @block_squiggle_1_3, @block_squiggle_1_4]
+        block_long = [[0, 0], [1, 0], [2, 0], [3, 0]]
+        block_long_2 = [[0, 0], [0, 1], [0, 2], [0, 3]]
+        block_long_3 = [[0, 0], [-1, 0], [-2, 0], [-3, 0]]
+        block_long_4 = [[0, 0], [0, -1], [0, -2], [0, -3]]
+        long_rotates = [block_long, block_long_2, block_long_3, block_long_4]
 
-        @block_squiggle_2 = [[0, 0], [1, 0], [1, 1], [2, 1]]
-        @block_squiggle_2_2 = [[1, 0], [1, 1], [0, 1], [0, 2]]
-        @block_squiggle_2_3 = [[0, 0], [1, 0], [1, 1], [2, 1]]
-        @block_squiggle_2_4 = [[1, 0], [1, 1], [0, 1], [0, 2]]
-        @squiggle_2_rotates = [@block_squiggle_2, @block_squiggle_2_2, @block_squiggle_2_3, @block_squiggle_2_4]
+        block_squiggle_1 = [[1, 0], [2, 0], [0, 1], [1, 1]]
+        block_squiggle_1_2 = [[0, 0], [0, 1], [1, 1], [1, 2]]
+        block_squiggle_1_3 = [[1, 0], [2, 0], [0, 1], [1, 1]]
+        block_squiggle_1_4 = [[0, 0], [0, 1], [1, 1], [1, 2]]
+        squiggle_1_rotates = [block_squiggle_1, block_squiggle_1_2, block_squiggle_1_3, block_squiggle_1_4]
 
-        @block_hook_2_yellow = [[0, 1], [1, 1], [2, 1], [2, 0]]
-        @block_hook_2_yellow_2 = [[0, 0], [0, 1], [0, 2], [1, 2]]
-        @block_hook_2_yellow_3 = [[0, 0], [0, 1], [1, 0], [2, 0]]
-        @block_hook_2_yellow_4 = [[0, 0], [1, 0], [1, 1], [1, 2]]
-        @hook_2_rotates = [@block_hook_2_yellow, @block_hook_2_yellow_2, @block_hook_2_yellow_3, @block_hook_2_yellow_4]
+        block_squiggle_2 = [[0, 0], [1, 0], [1, 1], [2, 1]]
+        block_squiggle_2_2 = [[1, 0], [1, 1], [0, 1], [0, 2]]
+        block_squiggle_2_3 = [[0, 0], [1, 0], [1, 1], [2, 1]]
+        block_squiggle_2_4 = [[1, 0], [1, 1], [0, 1], [0, 2]]
+        squiggle_2_rotates = [block_squiggle_2, block_squiggle_2_2, block_squiggle_2_3, block_squiggle_2_4]
 
-        @block_hook_1_blue = [[0, 0], [1, 0], [0, 1], [0, 2]]
-        @block_hook_1_blue_2 = [[0, 1], [1, 1], [2, 1], [2, 2]]
-        @block_hook_1_blue_3 = [[1, 0], [1, 1], [1, 2], [0, 2]]
-        @block_hook_1_blue_4 = [[0, 0], [0, 1], [1, 1], [2, 1]]
-        @hook_1_rotates = [@block_hook_1_blue, @block_hook_1_blue_2, @block_hook_1_blue_3, @block_hook_1_blue_4]
+        block_hook_2_yellow = [[0, 1], [1, 1], [2, 1], [2, 0]]
+        block_hook_2_yellow_2 = [[0, 0], [0, 1], [0, 2], [1, 2]]
+        block_hook_2_yellow_3 = [[0, 0], [0, 1], [1, 0], [2, 0]]
+        block_hook_2_yellow_4 = [[0, 0], [1, 0], [1, 1], [1, 2]]
+        hook_2_rotates = [block_hook_2_yellow, block_hook_2_yellow_2, block_hook_2_yellow_3, block_hook_2_yellow_4]
 
-        @types_of_blocks = [    @cube_rotates,      @long_rotates,  @squiggle_1_rotates,    @squiggle_2_rotates,    @hook_1_rotates,    @hook_2_rotates]
-        @block_colors = [       @cube_color,        @long_color,    @squiggle_1_color,      @squiggle_2_color,      @hook_1_color,      @hook_2_color]
+        block_hook_1_blue = [[0, 0], [1, 0], [0, 1], [0, 2]]
+        block_hook_1_blue_2 = [[0, 1], [1, 1], [2, 1], [2, 2]]
+        block_hook_1_blue_3 = [[1, 0], [1, 1], [1, 2], [0, 2]]
+        block_hook_1_blue_4 = [[0, 0], [0, 1], [1, 1], [2, 1]]
+        hook_1_rotates = [block_hook_1_blue, block_hook_1_blue_2, block_hook_1_blue_3, block_hook_1_blue_4]
+
+        block_t = [[-1, 0], [0, 0], [1, 0], [0, 1]]
+        block_t_2 = [[0, 1], [0, 0], [0, -1], [1, 0]]
+        block_t_3 = [[-1, 0], [0, 0], [1, 0], [0, -1]]
+        block_t_4 = [[0, 1], [0, 0], [0, -1], [-1, 0]]
+        block_t_rotates = [block_t, block_t_2, block_t_3, block_t_4]
+
+        @types_of_blocks = [    cube_rotates,      long_rotates,  squiggle_1_rotates,    squiggle_2_rotates,    hook_1_rotates,    hook_2_rotates, block_t_rotates]
+        @block_colors = [       @cube_color,        @long_color,    @squiggle_1_color,      @squiggle_2_color,      @hook_1_color,      @hook_2_color, @t_color]
         @current_peice = -1
         @current_peice_rotation = 0
         @current_peice_color = nil
@@ -72,6 +80,11 @@ class Intro < Gosu::Window
         @block_x_offset = 300
         @block_y_offset = 100
         @counter = 0
+        @is_holding = false
+        @allow_hold = true
+        @holding = nil
+        @holding_color = nil
+        @paused = false
         for i in 0..10 do
             @grid.append([@mid+@grid_dist_x*(i-5), @y_offset + @grid_dist_y*20, @mid+@grid_dist_x*(i-5), @y_offset])
         end
@@ -86,6 +99,14 @@ class Intro < Gosu::Window
 
     def update
         
+    end
+    
+    def draw_hold
+        if @is_holding
+            for i in @types_of_blocks[@holding][0]
+                self.draw_rect(50 + 40*i[0]+1.5, 100 + 40*i[1]+1.5, 37, 37, @holding_color)
+            end
+        end
     end
 
     def draw_grid
@@ -105,25 +126,37 @@ class Intro < Gosu::Window
     end
 
     def spawn_piece()
-        
-        @current_peice = rand(0...6)
+        @allow_hold = true
+        @current_peice = rand(0...7)
         p @current_peice
         @current_peice_rotation = 0
         @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
         p @current_moving
         @current_peice_color = @block_colors[@current_peice]
         @current_pos = [4, 0]
+
+        @current_moving.each { |part|
+            if @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] != nil
+                p @score
+                exit()
+                #GAME OVER!!!
+            end
+        }
     end
 
     def tETRIS_CLEAR_LINE()
+        score_add = 0
         @blocks.each_with_index{|line, index|
             #p line, index
             if not line.include?(nil)
                 #p @blocks
                 @blocks.delete_at(index)
                 @blocks.insert(0, [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
+                score_add += 1
+                score_add *= 2
             end
         }
+        @score += score_add
     end
 
     def move_left()
@@ -190,7 +223,6 @@ class Intro < Gosu::Window
     end
 
     def rotate()
-                # REMEMBER TO CHANGE TO ALL BLOCKS NOT JUST TESTING BLOCK
 
         clear_moving_before_moving()
         if collision(@types_of_blocks[@current_peice][@rotation_map[@current_peice_rotation]]) == true
@@ -224,18 +256,55 @@ class Intro < Gosu::Window
         }
     end
 
+    def hold()
+        clear_moving_before_moving()
+        if @is_holding == true
+            swap = @current_peice
+            swap_color = @current_peice_color
+            @current_peice = @holding
+            @current_peice_color = @holding_color
+            
+            @holding = swap
+            @holding_color = swap_color
+
+            @current_peice_rotation = 0
+            @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
+            
+            @current_pos = [4, 0]
+            p @holding
+        else
+            clear_moving_before_moving()
+            @holding = @current_peice
+            @holding_color = @current_peice_color
+
+            spawn_piece()
+
+            @is_holding = true
+
+
+        end
+    end
+
 	def button_up(key_id)
-		if key_id == Gosu::KbLeft then
-			move_left()
-        elsif key_id == Gosu::KbRight then
-            move_right()
-        elsif key_id == Gosu::KB_SPACE then
+		#if key_id == Gosu::KbLeft then
+	#		move_left()
+    #    elsif key_id == Gosu::KbRight then
+    #        move_right()
+        if key_id == Gosu::KB_SPACE then
             #self.close
             full_gravity()
-        elsif key_id == Gosu::KbDown then
-            gravity()
+    #    elsif key_id == Gosu::KbDown then
+    #        gravity()
+    
         elsif key_id == Gosu::KbUp then
             rotate()
+        elsif key_id == Gosu::KB_ESCAPE then
+            @paused = (not @paused)
+        elsif key_id == Gosu::KbC then
+            if @allow_hold
+                hold()
+                @allow_hold = false
+            end
             #self.close
 		end
 	end
@@ -243,6 +312,7 @@ class Intro < Gosu::Window
     def full_gravity()
         fall = true
         while fall == true do
+            @score += 1
             blocky_copy = []
             @blocks.each{|row| blocky_copy.append(row.clone)}
             
@@ -313,15 +383,33 @@ class Intro < Gosu::Window
             tETRIS_CLEAR_LINE()
         end
     end
+
+    def left_right_buttons()
+        if button_down?(Gosu::KbLeft) then
+			move_left()
+        elsif button_down?(Gosu::KbRight) then
+            move_right()
+        elsif button_down?(Gosu::KbDown) then
+            gravity()
+        end
+    end
+
     def draw
         draw_grid()
-        @counter += 1
-        if @counter > 15
-            #p @current_pos
-            #puts
-            #puts
-            gravity()
-            @counter = 0
+        draw_hold()
+        @font.draw(@score.to_s, 10, 20, 0)
+        if not @paused
+            @counter += 1
+            if @counter%4 == 0
+                left_right_buttons()
+            end
+            if @counter > 15
+                #p @current_pos
+                #puts
+                #puts
+                gravity()
+                @counter = 0
+            end
         end
     end
 end
