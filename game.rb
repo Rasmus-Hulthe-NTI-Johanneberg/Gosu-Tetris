@@ -1,7 +1,23 @@
 require 'gosu'
+class Colors
+    attr_reader :yellow, :light_blue, :dark_blue, :orange, :light_green, :green, :red, :purple, :fushia
+    def initialize
+        @yellow = 0xff_f7e444
+        @light_blue = 0xff_32b4e1
+        @dark_blue = 0xff_245594
+        @orange = 0xff_ea731d
+        @light_green = 0xff_00ff00
+        @green = 0xff_73bc18
+        @red = 0xff_f72034
+        @purple = 0xff_92298c
+        @fushia = 0xff_ff00ff
+    end
+end
+
 
 class Intro < Gosu::Window
     def initialize
+        colors = Colors.new
         @window_size = [1000, 1000]
         super @window_size[0], @window_size[1]
         self.caption = 'Spiders In Your Favorite Shoes? Just Leeave Them Be, Couse Theyre More Scared Of You.'
@@ -11,18 +27,17 @@ class Intro < Gosu::Window
         @grid_dist_y = 40
         @y_offset = 100
         @rotation_map = {0=>1, 1=>2, 2=>3, 3=>0}
-        @aqua = Gosu::Color.argb(0xff_00ffff)
-        @green = Gosu::Color.argb(0xff_00ff00)
-        @fushia = Gosu::Color.argb(0xff_ff00ff)
-        @random_color = Gosu::Color.argb(0xff_ffccff)
-        @red = Gosu::Color.argb(0xff_ff0000)
-        @cube_color = Gosu::Color.argb(0xff_f7e444) # yellow
-        @long_color = Gosu::Color.argb(0xff_32b4e1) # light blue
-        @hook_1_color = Gosu::Color.argb(0xff_245594) # Blue
-        @hook_2_color = Gosu::Color.argb(0xff_ea731d) # Yellow
-        @squiggle_1_color = Gosu::Color.argb(0xff_73bc18) # Green
-        @squiggle_2_color = Gosu::Color.argb(0xff_f72034) # Red
-        @t_color = Gosu::Color.argb(0xff_92298c)
+
+        @map_color_1 = colors.light_green
+        @map_color_2 = colors.fushia
+        @cube_color = colors.yellow
+        @long_color = colors.light_blue
+        @hook_1_color = colors.dark_blue
+        @hook_2_color = colors.orange
+        @squiggle_1_color = colors.green
+        @squiggle_2_color = colors.red
+        @t_color = colors.purple
+
         @font = Gosu::Font.new(32, name: "Nimbus Doggo L")
         
         @score = 0
@@ -111,7 +126,7 @@ class Intro < Gosu::Window
 
     def draw_grid
         @grid.each{|line|
-            self.draw_line(line[0], line[1],@fushia, line[2], line[3], @green)    
+            self.draw_line(line[0], line[1], @map_color_2, line[2], line[3], @map_color_1)    
         }
         for block_y in 0...20 do
             for block_x in 0...10 do
@@ -395,6 +410,7 @@ class Intro < Gosu::Window
     end
 
     def draw
+        p @blocks
         draw_grid()
         draw_hold()
         @font.draw(@score.to_s, 10, 20, 0)
@@ -413,5 +429,4 @@ class Intro < Gosu::Window
         end
     end
 end
-
 Intro.new.show
