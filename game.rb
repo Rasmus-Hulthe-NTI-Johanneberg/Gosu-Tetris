@@ -14,6 +14,11 @@ class Colors
     end
 end
 
+class Block
+    def initialize(rotations)
+        
+    end
+end
 
 class Intro < Gosu::Window
     def initialize
@@ -112,9 +117,6 @@ class Intro < Gosu::Window
 
     end
 
-    def update
-        
-    end
     
     def draw_hold
         if @is_holding
@@ -143,28 +145,23 @@ class Intro < Gosu::Window
     def spawn_piece()
         @allow_hold = true
         @current_peice = rand(0...7)
-        p @current_peice
         @current_peice_rotation = 0
         @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
-        p @current_moving
         @current_peice_color = @block_colors[@current_peice]
         @current_pos = [4, 0]
 
         @current_moving.each { |part|
             if @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] != nil
-                p @score
                 exit()
                 #GAME OVER!!!
             end
         }
     end
 
-    def tETRIS_CLEAR_LINE()
+    def Tetris_clear_line()
         score_add = 0
         @blocks.each_with_index{|line, index|
-            #p line, index
             if not line.include?(nil)
-                #p @blocks
                 @blocks.delete_at(index)
                 @blocks.insert(0, [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil])
                 score_add += 1
@@ -196,7 +193,7 @@ class Intro < Gosu::Window
                 fall = false
             end
         }
-        if fall == true
+        if fall
             @current_pos[0] -= 1
             @current_moving.each { |part|
                 @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
@@ -227,7 +224,7 @@ class Intro < Gosu::Window
                 fall = false
             end
         }
-        if fall == true
+        if fall
             @current_pos[0] += 1
             @current_moving.each { |part|
                 @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
@@ -240,7 +237,7 @@ class Intro < Gosu::Window
     def rotate()
 
         clear_moving_before_moving()
-        if collision(@types_of_blocks[@current_peice][@rotation_map[@current_peice_rotation]]) == true
+        if collision(@types_of_blocks[@current_peice][@rotation_map[@current_peice_rotation]])
             @current_peice_rotation = @rotation_map[@current_peice_rotation]    
         end
         @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
@@ -273,7 +270,7 @@ class Intro < Gosu::Window
 
     def hold()
         clear_moving_before_moving()
-        if @is_holding == true
+        if @is_holding
             swap = @current_peice
             swap_color = @current_peice_color
             @current_peice = @holding
@@ -286,7 +283,6 @@ class Intro < Gosu::Window
             @current_moving = @types_of_blocks[@current_peice][@current_peice_rotation]
             
             @current_pos = [4, 0]
-            p @holding
         else
             clear_moving_before_moving()
             @holding = @current_peice
@@ -326,7 +322,7 @@ class Intro < Gosu::Window
 
     def full_gravity()
         fall = true
-        while fall == true do
+        while fall do
             @score += 1
             blocky_copy = []
             @blocks.each{|row| blocky_copy.append(row.clone)}
@@ -348,27 +344,24 @@ class Intro < Gosu::Window
                     fall = false
                 end
             }
-            if fall == true
+            if fall
                 @current_pos[1] += 1
                 @current_moving.each { |part|
                     @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
                 }
             else
                 @blocks = blocky_copy
-                #print blocky_copy
+
                 spawn_piece()
-                tETRIS_CLEAR_LINE()
+                Tetris_clear_line()
             end
         end
     end
 
     def gravity()
         fall = true
-        #p @blocks
         blocky_copy = []
         @blocks.each{|row| blocky_copy.append(row.clone)}
-        #print blocky_copy
-        #p @current_moving
         @current_moving.each { |part|
             @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = nil
         }
@@ -386,16 +379,15 @@ class Intro < Gosu::Window
                 fall = false
             end
         }
-        if fall == true
+        if fall
             @current_pos[1] += 1
             @current_moving.each { |part|
                 @blocks[part[1] + @current_pos[1]][part[0] + @current_pos[0]] = @current_peice_color
             }
         else
             @blocks = blocky_copy
-            #print blocky_copy
             spawn_piece()
-            tETRIS_CLEAR_LINE()
+            Tetris_clear_line()
         end
     end
 
@@ -410,7 +402,6 @@ class Intro < Gosu::Window
     end
 
     def draw
-        p @blocks
         draw_grid()
         draw_hold()
         @font.draw(@score.to_s, 10, 20, 0)
@@ -420,9 +411,6 @@ class Intro < Gosu::Window
                 left_right_buttons()
             end
             if @counter > 15
-                #p @current_pos
-                #puts
-                #puts
                 gravity()
                 @counter = 0
             end
